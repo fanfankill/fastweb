@@ -5,7 +5,7 @@ const moment = require('moment')
 
 //登录
 exports.login = (req, res) => {
-        let sql='select * from 人员登录 where username=? and password=? ;drop table 停车车辆表'
+        let sql='select * from 人员登录 where username=? and password=? '
         let info=req.body
         let data=[info.username,info.password]
         
@@ -19,7 +19,7 @@ exports.login = (req, res) => {
                 {
                         res.json({
                                 'code':0,
-                                         'message':'用户名或密码不正确'
+                                'message':'用户名或密码不正确'
                         })  
                 }
                 else{
