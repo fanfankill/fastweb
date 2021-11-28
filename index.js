@@ -14,54 +14,65 @@ var server=app.listen(3002)
 
 //放用户
 
-const users=[]
 var io=require('socket.io').listen(server)
+
+const users=[]
+let count=0
 io.on('connection',function(socket){
   console.log("新用户加入房间");
-
-
+  console.log(count++);
   //监听Login事件
   socket.on('login',(data)=>{
           // console.log(data);
-      //放数据,顺便增加唯一id
-      console.log(users.some(v=>{v.adminid==data.adminid}));
-      
+      //放数据,顺便增加唯一id  
       data.id=socket.id
-      
-
-      if(users.some(v=>{ return v.adminid==data.adminid}))
+      if(users.some(v=>{ return v.adminid==data.adminid}) || !data.adminid)
       {
-        data.usertotal=users.length
         console.log('已经进入');
         io.emit('loginback',{...data,users,flag:0})
       }else{
-    
-        data.usertotal=users.length+1
-      // console.log(users.length);
+        console.log('ww');
       users.push({...data})
+      console.log(users);
       io.emit('loginback',{...data,users,flag:1})
       // console.log(users.length);
 
       // console.log('id是'+socket.id);
       //所有人广播
       }
-    
   })
 
+  //修改存放的头像和姓名
+  socket.on('changemes',data=>{
+    //每次修改信息后就应该发送请求过来
+    //这时候根据socket的Id来修改我们的信息
+    users.forEach((value,index)=>{
+      console.log(socket.id);
+      if(value.id==socket.id){
+        console.log('我改了他的名字和Img');
+        value.img=data.img
+        value.adminname=data.adminname
+      }
+      console.log(users);
+    })
+    
+    console.log(data);
+  })
 
   //接受消息
   socket.on('client',data2=>{
       // console.log(data2.value);
       data2.users=users.find(u=>u.id==socket.id)
-  
       // console.log(data2.users);
       socket.broadcast.emit('sendmes',data2)
   })
 
-  socket.on('disconnect',()=>{
+  socket.on('disconnect',function(){
+    console.log(users);
     let data={}
     let index
      users.forEach((u,i)=>{
+       console.log(u);
        if(u.id==socket.id)
        {
           console.log('我找到了'+i);
@@ -70,12 +81,12 @@ io.on('connection',function(socket){
        }
      })
      console.log(data,index);
-    console.log('有人离开');
+    console.log(data.adminname+'离开');
     //需要把数组中这个人移除
     console.log('删除前'+users.length);
     users.splice(index,1)
     console.log('删除后'+users.length);
-    io.emit('somelive',{...data,users,usertotal:users.length})
+    io.emit('somelive',{...data,users})
   })
   
 })

@@ -2,6 +2,7 @@
   "dependencies": {
     "art-template": "^4.13.2",
     "body-parser": "^1.19.0",
+    "compression": "^1.7.4",
     "connect-history-api-fallback": "^1.6.0",
     "express": "^4.17.1",
     "express-art-template": "^1.0.1",
@@ -20,7 +21,6 @@
     "weapp.socket.io": "^2.1.0"
   },
   "name": "depotsystem",
-
   "version": "1.0.0",
   "main": "index.js",
   "devDependencies": {},
@@ -28,11 +28,9 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node index.js"
   },
-
   "engines": {
     "node": "*"
   },
-
   "keywords": [],
   "author": "",
   "license": "ISC",
